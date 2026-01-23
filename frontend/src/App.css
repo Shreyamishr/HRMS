@@ -1,0 +1,286 @@
+/* =========================================
+   Global Layout & Variables
+   ========================================= */
+.app-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f3f4f6;
+    /* gray-100 */
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    /* Prevent body scroll */
+}
+
+/* =========================================
+   Sidebar Styling
+   ========================================= */
+.sidebar {
+    width: 260px;
+    background-color: #1e40af;
+    /* blue-800 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0;
+    z-index: 50;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link.active {
+    background-color: #1d4ed8;
+    /* blue-700 */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    font-size: 0.875rem;
+    opacity: 0.8;
+}
+
+/* =========================================
+   Main Content Area
+   ========================================= */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.top-header {
+    background: white;
+    height: 64px;
+    padding: 0 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 40;
+}
+
+.header-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    /* gray-800 */
+}
+
+.page-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    scroll-behavior: smooth;
+}
+
+/* =========================================
+   Mobile Specific Styles (Responsive)
+   ========================================= */
+.mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.menu-btn {
+    display: none;
+    /* Hidden on desktop */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #4b5563;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 968px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .menu-btn {
+        display: block;
+        /* Visible on mobile/tablet */
+    }
+
+    .page-content {
+        padding: 1rem;
+    }
+}
+
+/* =========================================
+   Data Tables (Responsive)
+   ========================================= */
+.table-container {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scroll on iOS */
+}
+
+.custom-table {
+    width: 100%;
+    min-width: 600px;
+    /* Force scroll if needed */
+    border-collapse: collapse;
+}
+
+.custom-table th {
+    background-color: #f9fafb;
+    color: #4b5563;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.custom-table td {
+    padding: 1rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tr:hover {
+    background-color: #f9fafb;
+}
+
+/* =========================================
+   Forms & Inputs
+   ========================================= */
+.form-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    font-weight: 500;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #1d4ed8;
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

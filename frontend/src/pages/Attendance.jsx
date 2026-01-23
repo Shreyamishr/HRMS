@@ -71,14 +71,14 @@ const Attendance = () => {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Mark Attendance Form */}
             <div className="lg:col-span-1">
-                <div className="bg-white p-6 rounded-xl shadow-md sticky top-6">
+                <div className="form-card sticky top-6">
                     <h2 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Mark Attendance</h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Select Employee</label>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label className="form-label">Select Employee</label>
                             <select
                                 name="employeeId"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                                className="form-input bg-white"
                                 value={formData.employeeId}
                                 onChange={handleChange}
                                 required
@@ -92,20 +92,21 @@ const Attendance = () => {
                             </select>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <div className="form-group">
+                            <label className="form-label">Date</label>
                             <input
                                 type="date"
                                 name="date"
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                max={new Date().toISOString().split('T')[0]} // Prevent future dates
+                                className="form-input"
                                 value={formData.date}
                                 onChange={handleChange}
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <div className="form-group">
+                            <label className="form-label">Status</label>
                             <div className="flex gap-4">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
@@ -135,7 +136,7 @@ const Attendance = () => {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg shadow-md transition-all mt-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`btn-primary w-full mt-2`}
                         >
                             {isSubmitting ? 'Processing...' : 'Submit'}
                         </button>
@@ -145,7 +146,7 @@ const Attendance = () => {
 
             {/* Attendance List */}
             <div className="lg:col-span-2">
-                <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                <div className="table-container">
                     <div className="p-4 border-b border-gray-200 bg-gray-50">
                         <h2 className="text-lg font-bold text-gray-800">Recent Attendance Records</h2>
                     </div>
@@ -155,24 +156,24 @@ const Attendance = () => {
                     ) : attendance.length === 0 ? (
                         <div className="p-8 text-center text-gray-500">No attendance records found.</div>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50 text-gray-600 text-sm border-b">
+                        <div className="table-scroll">
+                            <table className="custom-table">
+                                <thead>
                                     <tr>
-                                        <th className="p-4">Date</th>
-                                        <th className="p-4">Employee</th>
-                                        <th className="p-4 text-center">Status</th>
+                                        <th>Date</th>
+                                        <th>Employee</th>
+                                        <th className="text-center">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody>
                                     {attendance.map((record) => (
-                                        <tr key={record._id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="p-4 text-gray-600">{record.date}</td>
-                                            <td className="p-4 font-medium text-gray-800">
+                                        <tr key={record._id}>
+                                            <td className="text-gray-600">{record.date}</td>
+                                            <td className="font-medium text-gray-800">
                                                 {getEmployeeName(record.employeeId)}
                                                 <span className="text-xs text-gray-400 ml-2 block sm:inline">#{record.employeeId}</span>
                                             </td>
-                                            <td className="p-4 text-center">
+                                            <td className="text-center">
                                                 <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${record.status === 'Present'
                                                     ? 'bg-green-100 text-green-700'
                                                     : 'bg-red-100 text-red-700'

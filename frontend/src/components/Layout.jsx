@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { FaUserTie, FaClipboardList, FaChartPie } from 'react-icons/fa';
+import { FaUserTie, FaClipboardList, FaChartPie, FaBars, FaTimes } from 'react-icons/fa';
 
 const Layout = () => {
     const location = useLocation();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const isActive = (path) => {
         if (path === '/') return location.pathname === '/' ? 'bg-blue-700' : 'hover:bg-blue-600';
@@ -11,54 +12,76 @@ const Layout = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-100 font-sans">
+        <div className="app-container">
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div
+                    className="mobile-overlay"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <div className="w-64 bg-blue-800 text-white flex flex-col shadow-lg">
-                <div className="p-6 text-2xl font-bold border-b border-blue-700 flex items-center gap-2">
-                    HRMS Lite
+            <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div className="sidebar-header">
+                    <span className="flex items-center gap-2">HRMS Lite</span>
+                    <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-gray-300 hover:text-white" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>
+                        <FaTimes />
+                    </button>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2">
+                <nav className="sidebar-nav">
                     <Link
                         to="/"
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ${isActive('/')}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                        className={`nav-link ${isActive('/')}`}
                     >
                         <FaChartPie className="text-xl" />
-                        <span className="font-medium">Dashboard</span>
+                        <span>Dashboard</span>
                     </Link>
 
                     <Link
                         to="/employees"
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ${isActive('employees')}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                        className={`nav-link ${isActive('employees')}`}
                     >
                         <FaUserTie className="text-xl" />
-                        <span className="font-medium">Employees</span>
+                        <span>Employees</span>
                     </Link>
 
                     <Link
                         to="/attendance"
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ${isActive('attendance')}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                        className={`nav-link ${isActive('attendance')}`}
                     >
                         <FaClipboardList className="text-xl" />
-                        <span className="font-medium">Attendance</span>
+                        <span>Attendance</span>
                     </Link>
                 </nav>
 
-                <div className="p-4 border-t border-blue-700">
-                    <div className="text-sm opacity-70 text-center">Admin User</div>
+                <div className="sidebar-footer">
+                    <div>Admin User</div>
                 </div>
-            </div>
+            </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="bg-white shadow-sm p-4 flex justify-between items-center z-10">
-                    <h1 className="text-xl font-semibold text-gray-800">
-                        {location.pathname === '/' ? 'Dashboard' : location.pathname.includes('employees') ? 'Employee Management' : 'Attendance Management'}
-                    </h1>
-                    <div className="text-gray-500 text-sm">Welcome, Admin</div>
+            <div className="main-content">
+                <header className="top-header">
+                    <div className="flex items-center">
+                        <button
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="menu-btn"
+                        >
+                            <FaBars />
+                        </button>
+                        <h1 className="header-title">
+                            {location.pathname === '/' ? 'Dashboard' : location.pathname.includes('employees') ? 'Employees' : 'Attendance'}
+                        </h1>
+                    </div>
+                    <div className="text-gray-500 text-sm hidden sm:block">Welcome, Admin</div>
                 </header>
 
-                <main className="flex-1 overflow-auto p-6">
+                <main className="page-content">
                     <Outlet />
                 </main>
             </div>

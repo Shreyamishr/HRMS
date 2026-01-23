@@ -92,41 +92,43 @@ const Employees = () => {
                     <p className="text-gray-500">No employees found. Add one to get started.</p>
                 </div>
             ) : (
-                <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                    <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="p-4 font-semibold text-gray-600">ID</th>
-                                <th className="p-4 font-semibold text-gray-600">Name</th>
-                                <th className="p-4 font-semibold text-gray-600">Email</th>
-                                <th className="p-4 font-semibold text-gray-600">Department</th>
-                                <th className="p-4 font-semibold text-gray-600 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employees.map((emp) => (
-                                <tr key={emp._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                    <td className="p-4 font-medium text-gray-800">{emp.employeeId}</td>
-                                    <td className="p-4 text-gray-700">{emp.name}</td>
-                                    <td className="p-4 text-gray-600">{emp.email}</td>
-                                    <td className="p-4">
-                                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
-                                            {emp.department}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-right">
-                                        <button
-                                            onClick={() => handleDelete(emp._id)}
-                                            className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors"
-                                            title="Delete Employee"
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                    </td>
+                <div className="table-container">
+                    <div className="table-scroll">
+                        <table className="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th className="text-right">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {employees.map((emp) => (
+                                    <tr key={emp._id}>
+                                        <td className="font-medium">{emp.employeeId}</td>
+                                        <td>{emp.name}</td>
+                                        <td>{emp.email}</td>
+                                        <td>
+                                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                                                {emp.department}
+                                            </span>
+                                        </td>
+                                        <td className="text-right">
+                                            <button
+                                                onClick={() => handleDelete(emp._id)}
+                                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors"
+                                                title="Delete Employee"
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 
