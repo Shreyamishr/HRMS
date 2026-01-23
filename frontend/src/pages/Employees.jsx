@@ -3,12 +3,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaTrash, FaPlus } from 'react-icons/fa';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + '/employees';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://hrms-0ne6.onrender.com/api";
+const API_URL = `${API_BASE_URL}/employees`;
 
 const Employees = () => {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         employeeId: '',
         name: '',
@@ -19,7 +21,7 @@ const Employees = () => {
     const fetchEmployees = async () => {
         try {
             const response = await axios.get(API_URL);
-            setEmployees(response.data);
+            setEmployees(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             toast.error('Failed to fetch employees');
         } finally {
@@ -37,6 +39,9 @@ const Employees = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return; // Prevent double submission
+
+        setIsSubmitting(true);
         try {
             await axios.post(API_URL, formData);
             toast.success('Employee added successfully');
@@ -44,7 +49,13 @@ const Employees = () => {
             setFormData({ employeeId: '', name: '', email: '', department: 'Engineering' });
             fetchEmployees();
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Error adding employee');
+            if (error.response?.status === 400) {
+                toast.error('Duplicate Employee ID or Email!');
+            } else {
+                toast.error(error.response?.data?.message || 'Error adding employee');
+            }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -184,9 +195,10 @@ const Employees = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-md transition-all"
+                                    disabled={isSubmitting}
+                                    className={`px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-md transition-all ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    Save Employee
+                                    {isSubmitting ? 'Saving...' : 'Save Employee'}
                                 </button>
                             </div>
                         </form>

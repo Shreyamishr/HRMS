@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaUserFriends, FaClipboardCheck, FaBuilding } from 'react-icons/fa';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://hrms-0ne6.onrender.com/api";
 
 const Dashboard = () => {
     const [stats, setStats] = useState({
@@ -21,8 +21,9 @@ const Dashboard = () => {
                     axios.get(`${API_BASE_URL}/attendance`)
                 ]);
 
-                const employees = empRes.data;
-                const attendance = attRes.data;
+                // Safety checks
+                const employees = Array.isArray(empRes.data) ? empRes.data : [];
+                const attendance = Array.isArray(attRes.data) ? attRes.data : [];
 
                 const uniqueDepartments = new Set(employees.map(e => e.department)).size;
                 const presentToday = attendance.filter(a => a.date === today && a.status === 'Present').length;

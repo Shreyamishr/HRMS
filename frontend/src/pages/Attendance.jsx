@@ -3,12 +3,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://hrms-0ne6.onrender.com/api";
 
 const Attendance = () => {
     const [employees, setEmployees] = useState([]);
     const [attendance, setAttendance] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         employeeId: '',
         date: new Date().toISOString().split('T')[0],
@@ -22,8 +23,8 @@ const Attendance = () => {
                 axios.get(`${API_BASE_URL}/employees`),
                 axios.get(`${API_BASE_URL}/attendance`)
             ]);
-            setEmployees(empRes.data);
-            setAttendance(attRes.data);
+            setEmployees(Array.isArray(empRes.data) ? empRes.data : []);
+            setAttendance(Array.isArray(attRes.data) ? attRes.data : []);
         } catch (error) {
             toast.error('Failed to load data');
         } finally {
@@ -45,12 +46,19 @@ const Attendance = () => {
             toast.error('Please select an employee');
             return;
         }
+
+        if (isSubmitting) return; // Prevent double submit
+        setIsSubmitting(true);
+
         try {
+            const isUpdate = attendance.some(a => a.employeeId === formData.employeeId && a.date === formData.date);
             await axios.post(`${API_BASE_URL}/attendance`, formData);
-            toast.success('Attendance marked');
+            toast.success(isUpdate ? 'Attendance Updated!' : 'Attendance Marked!');
             fetchData(); // Refresh list
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error marking attendance');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -126,9 +134,10 @@ const Attendance = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg shadow-md transition-all mt-2"
+                            disabled={isSubmitting}
+                            className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg shadow-md transition-all mt-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                            Submit
+                            {isSubmitting ? 'Processing...' : 'Submit'}
                         </button>
                     </form>
                 </div>
@@ -165,8 +174,8 @@ const Attendance = () => {
                                             </td>
                                             <td className="p-4 text-center">
                                                 <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${record.status === 'Present'
-                                                        ? 'bg-green-100 text-green-700'
-                                                        : 'bg-red-100 text-red-700'
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : 'bg-red-100 text-red-700'
                                                     }`}>
                                                     {record.status === 'Present' ? <FaCheckCircle /> : <FaTimesCircle />}
                                                     {record.status}
