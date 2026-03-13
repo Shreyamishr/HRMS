@@ -1,24 +1,23 @@
-from fastapi import APIRouter, HTTPException, status, Body
+from fastapi import APIRouter, HTTPException, Body
 from typing import List
 from app.models import EmployeeModel
 from app.database import employee_collection
 from bson import ObjectId
-import pymongo
 
 router = APIRouter()
 
-@router.post("/", response_description="Add new employee", response_model=EmployeeModel)
+@router.post("", response_description="Add new employee", response_model=EmployeeModel)
 async def create_employee(employee: EmployeeModel = Body(...)):
     # Check for duplicates
     existing = await employee_collection.find_one({"$or": [{"employeeId": employee.employeeId}, {"email": employee.email}]})
     if existing:
         raise HTTPException(status_code=400, detail="Employee with this ID or Email already exists")
     
-    new_employee = await employee_collection.insert_one(employee.model_dump(by_alias=True, exclude=["id"]))
+    new_employee = await employee_collection.insert_one(employee.model_dump(by_alias=True, exclude={"id"}))
     created_employee = await employee_collection.find_one({"_id": new_employee.inserted_id})
     return created_employee
 
-@router.get("/", response_description="List all employees", response_model=List[EmployeeModel])
+@router.get("", response_description="List all employees", response_model=List[EmployeeModel])
 async def list_employees():
     employees = await employee_collection.find().to_list(1000)
     return employees

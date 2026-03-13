@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 # Absolute imports assuming 'app' is the package
 from app.routes import employee, attendance
 from app.database import database
@@ -8,12 +9,13 @@ import os
 
 load_dotenv()
 
-app = FastAPI(title="HRMS Lite API")
-
-# Print DB connection on startup
-@app.on_event("startup")
-async def startup_db_client():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     print(f"Connecting to Database: {database.name}")
+    yield
+
+app = FastAPI(title="HRMS Lite API", redirect_slashes=False, lifespan=lifespan)
+
 
 # CORS - Allow all for deployment simplicity (or restrict to Vercel domain later)
 origins = ["*"]

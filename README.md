@@ -71,6 +71,9 @@ A lightweight Human Resource Management System designed to manage employee recor
 - Dates are stored in YYYY-MM-DD string format for simplicity.
 - The 'Department' list is hardcoded in the frontend dropdown for this assignment.
 
+> **Note on Free Tier Hosting (Initial Loading Delay):** 
+> The backend is hosted on Render's free tier, which spins down after 15 minutes of inactivity. **The first API request may take 50+ seconds to respond** while the server wakes up. Please be patient on the initial load; subsequent requests will be fast.
+
 ## Deployment Guide 🚀
 
 ### 1. Backend (Render)
